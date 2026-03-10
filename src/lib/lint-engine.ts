@@ -1,4 +1,4 @@
-import { ESLint, Linter } from 'eslint';
+import { ESLint } from 'eslint';
 import * as fs from 'fs';
 import path from 'path';
 
@@ -21,10 +21,9 @@ export class CodeReviewEngine {
 
   constructor(options: LintOptions = {}) {
     this.eslint = new ESLint({
-      extensions: ['.ts', '.tsx', '.js', '.jsx'],
       overrideConfig: options.config,
       useEslintrc: false,
-    });
+    } as any);
   }
 
   async reviewFile(filePath: string): Promise<Violation[]> {
@@ -42,7 +41,7 @@ export class CodeReviewEngine {
           location: { line: msg.line, column: msg.column },
           ruleId: msg.ruleId || 'unknown',
           message: msg.message,
-          source: msg.source,
+          source: (msg as any).source,
           filePath,
         });
       }

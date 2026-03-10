@@ -1,7 +1,17 @@
+/**
+ * AI Suggestions - L1 基础 AI 建议
+ *
+ * 使用 Ollama qwen3-coder 模型生成代码修复建议。
+ * 更新：从 gpt-oss-20b (OpenAI 兼容) 迁移到 Ollama 原生 API。
+ */
+
 export interface Suggestion {
   suggestion: string;
   confidence?: number;
 }
+
+const DEFAULT_OLLAMA_URL = 'http://192.168.66.141:11434';
+const DEFAULT_MODEL = 'qwen3-coder';
 
 export async function generateSuggestion(
   violation: {
@@ -11,7 +21,8 @@ export async function generateSuggestion(
     message: string;
     source?: string;
   },
-  modelUrl: string = 'http://192.168.66.141:12004/v1'
+  ollamaUrl: string = DEFAULT_OLLAMA_URL,
+  model: string = DEFAULT_MODEL
 ): Promise<Suggestion> {
   const prompt = `Review this code issue and provide a specific fix:
 
@@ -26,41 +37,53 @@ Provide:
 2. Why this is a problem
 3. Example corrected code
 
-Keep your response under 200 words.`;
+Keep your response under 200 words. Do NOT wrap your response in any XML-like tags.`;
 
   try {
-    const response = await fetch(`${modelUrl}/chat/completions`, {
+    const response = await fetch(`${ollamaUrl}/api/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gpt-oss-20b',
+        model,
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 256,
-        temperature: 0.3,
+        stream: false,
+        options: {
+          temperature: 0.3,
+          num_predict: 512,
+        },
       }),
     });
 
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content || '';
-    
+    if (!response.ok) {
+      throw new Error(`Ollama API error: ${response.status}`);
+    }
+
+    const data = await response.json() as {
+      message?: { content?: string };
+    };
+
+    let text = data.message?.content || '';
+
+    // Strip <think> tags if present
+    text = text.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
     return {
-      suggestion: text.trim(),
+      suggestion: text || 'Review the code against best practices.',
       confidence: 0.8,
     };
   } catch (error) {
-    console.error('AI suggestion failed:', error);
+    console.error('AI suggestion failed:', (error as Error).message);
     return {
-      suggestion: 'Review the code against best practices.',
-      confidence: 0.5,
+      suggestion: 'AI suggestion unavailable. Review the code against best practices.',
+      confidence: 0.3,
     };
   }
 }
 
 export async function batchGenerateSuggestions(
   violations: any[],
-  modelUrl?: string
+  ollamaUrl?: string,
+  model?: string
 ): Promise<Map<string, string>> {
   const suggestions = new Map<string, string>();
 
@@ -68,11 +91,11 @@ export async function batchGenerateSuggestions(
   const batchSize = 3;
   for (let i = 0; i < violations.length; i += batchSize) {
     const batch = violations.slice(i, i + batchSize);
-    
+
     await Promise.all(
-      batch.map(async (v) => {
+      batch.map(async (v: any) => {
         const key = `${v.filePath}:${v.location.line}:${v.location.column}`;
-        const result = await generateSuggestion(v, modelUrl);
+        const result = await generateSuggestion(v, ollamaUrl, model);
         suggestions.set(key, result.suggestion);
       })
     );

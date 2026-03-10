@@ -4,97 +4,187 @@ Local AI-powered code review for JavaScript/TypeScript projects. Your code stays
 
 ## ✨ Features
 
-- **Local-first** - All analysis runs on your machine with gpt-oss-20b
-- **Privacy-focused** - Your code never leaves your local environment
-- **Smart suggestions** - AI explains why issues occur and how to fix them
-- **Batch processing** - Review entire codebases in minutes
-- **Configurable rules** - Use your favorite ESLint configs (Airbnb, Standard, etc.)
+- **Local-first** — All analysis runs on your machine with Ollama (qwen3-coder)
+- **Privacy-focused** — Your code never leaves your local environment
+- **Multi-level analysis** — L1 (lint + AI suggestions) and L2 (embedding + deep LLM review)
+- **Smart suggestions** — AI explains why issues occur and how to fix them
+- **Code similarity detection** — Embedding-based duplicate/copy-paste detection
+- **Batch processing** — Review entire codebases in minutes
+- **Configurable rules** — Use your favorite ESLint configs
 
 ## 🚀 Quick Start
 
 ```bash
 # Clone and install
-git clone https://github.com/your-username/code-review-bot.git
+git clone https://github.com/raye-deng/code-review-bot.git
 cd code-review-bot
 npm install
 
-# Review a single file
-npx tsx src/index.ts path/to/file.ts
+# L1: Basic lint + AI suggestions (default)
+npx tsx src/index.ts path/to/code
 
-# Review a directory
-npx tsx src/index.ts path/to/project
+# L2: Lint + embedding similarity + deep LLM analysis
+npx tsx src/index.ts path/to/code --level L2
+```
+
+## 📊 Analysis Levels
+
+### L1 — Basic Analysis (Default)
+
+- **ESLint static check** — Rule-based linting with TypeScript support
+- **AI suggestions** — qwen3-coder generates fix suggestions for each issue
+
+```bash
+npx tsx src/index.ts ./src
+```
+
+### L2 — Deep Analysis
+
+Everything in L1, plus:
+
+- **Embedding similarity** — Uses `qwen2.5:7b-instruct` to vectorize code files and detect similar/duplicate logic (cosine similarity > 0.85)
+- **Deep LLM review** — Uses `qwen3-coder` for comprehensive analysis:
+  - 🏗️ Architecture issues (module coupling, unclear responsibilities)
+  - 🔒 Security vulnerabilities (injection, hardcoded credentials)
+  - ⚡ Performance issues (N+1, memory leaks, unnecessary re-renders)
+  - ✅ Best practices (TypeScript type safety, error handling, logging)
+  - 🔄 Code similarity (embedding-based duplicate detection)
+
+```bash
+npx tsx src/index.ts ./src --level L2
 ```
 
 ## 📋 Example Output
 
+### L1 Output
+
 ```
+╔════════════════════════════════════════╗
+║  🤖 Code Review Bot — Level L1        ║
+╚════════════════════════════════════════╝
+
 🔍 Reviewing code in: ./src
+📊 Analysis level: L1
 
-📄 src/utils.ts: 3 issues found
+━━━ L1: ESLint + AI Suggestions ━━━
+  📄 src/index.ts: 5 issues
 
-ERROR: no-undef
-📍 src/utils.ts:3:3
-💬 'console' is not defined.
+═══════════════════════════════════════════════════════
+📋 SECTION 1: ESLINT RESULTS
+═══════════════════════════════════════════════════════
 
-Code:
-  console.log('Calculating price...');
-
-💡 Suggestion:
-  Replace console.log with a proper logging utility or remove it. In production, console statements should be handled by a logging service that can control log levels and output destinations.
+WARNING: no-console
+📍 index.ts:10:3
+💬 Unexpected console statement.
+💡 Use a proper logging utility...
 ```
 
-## 🔧 Configuration
+### L2 Output (additional sections)
 
-Create a config file to customize rules:
+```
+═══════════════════════════════════════════════════════
+📐 SECTION 2: CODE SIMILARITY (EMBEDDING)
+═══════════════════════════════════════════════════════
 
-```json
-{
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:recommended"],
-  "rules": {
-    "no-console": "warn",
-    "no-unused-vars": "error",
-    "@typescript-eslint/no-explicit-any": "warn"
-  }
-}
+⚠️  Similarity: 92.3%
+  File A: src/lib/lint-engine.ts
+  File B: src/lib/ai-suggestions.ts
+  → Consider extracting shared logic into a common module.
+
+═══════════════════════════════════════════════════════
+🔬 SECTION 3: DEEP LLM ANALYSIS
+═══════════════════════════════════════════════════════
+
+📄 src/lib/ai-suggestions.ts
+   Summary: Generally well-structured with room for improvement
+
+  🟡 [WARNING] [type-safety] Use of `any` type in batch function
+     The violations parameter uses `any[]` which bypasses TypeScript safety.
+     💡 Define a proper Violation interface and use it consistently.
+
+  🔵 [INFO] [error-handling] Generic error catch
+     The catch block logs but doesn't provide structured error info.
+     💡 Use a custom error class with error codes.
+```
+
+## 🔧 Prerequisites
+
+- **Node.js** >= 18
+- **Ollama** running at `http://192.168.66.141:11434` (configurable)
+- **Models**:
+  - `qwen3-coder` — for AI suggestions and deep review
+  - `qwen2.5:7b-instruct` — for embedding (L2 only)
+
+```bash
+# Pull required models
+ollama pull qwen3-coder
+ollama pull qwen2.5:7b-instruct
 ```
 
 ## 🏗️ Architecture
 
-- **ESLint** - Static analysis and rule checking
-- **TypeScript AST** - Accurate code parsing
-- **gpt-oss-20b** - Local LLM for natural language suggestions
-- **Batch processing** - Efficient codebase reviews
+```
+src/
+  index.ts                 # CLI entry point (--level L1|L2)
+  lib/
+    lint-engine.ts         # ESLint wrapper (L1)
+    ai-suggestions.ts      # AI fix suggestions via Ollama (L1)
+    embedding-engine.ts    # Embedding + cosine similarity (L2)
+    deep-review.ts         # Deep LLM code review (L2)
+```
 
-## 📊 Validation Status
+| Component | Level | Purpose |
+|-----------|-------|---------|
+| ESLint Engine | L1 | Static analysis, rule checking |
+| AI Suggestions | L1 | Natural language fix suggestions |
+| Embedding Engine | L2 | Code vectorization + similarity detection |
+| Deep Review | L2 | Comprehensive LLM-based code audit |
 
-- ✅ Engine tested with TypeScript/JavaScript files
-- ✅ Local model integration working
-- ⏳ Production deployment pending
-- ⏳ User feedback collection
+## 🔧 Configuration
 
-## 🎯 MVP Roadmap (7 Days)
+### ESLint Rules
 
-- [x] Day 1-2: Core engine + local model integration
-- [ ] Day 3-4: Web UI + real-time review
-- [ ] Day 5: User accounts + history
-- [ ] Day 6: Testing & optimization
-- [ ] Day 7: Launch on Product Hunt & IndieHackers
+Customize in `src/index.ts`:
 
-## 💰 Pricing (Planned)
+```typescript
+const engine = new CodeReviewEngine({
+  config: {
+    parser: '@typescript-eslint/parser',
+    plugins: ['@typescript-eslint'],
+    rules: {
+      'no-console': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+    },
+  },
+});
+```
 
-- **Free**: 10 reviews/day, 500 line limit
-- **Pro ($9/mo)**: Unlimited reviews, advanced rules, priority support
+### Ollama Settings
 
-## 🤝 Contributing
+Default Ollama URL: `http://192.168.66.141:11434`
 
-Issues and PRs welcome! This is an MVP - expect rapid iteration.
+To use a different Ollama instance, modify the constants in:
+- `src/lib/ai-suggestions.ts`
+- `src/lib/embedding-engine.ts`
+- `src/lib/deep-review.ts`
+
+### Similarity Threshold
+
+Default: `0.85` (85%). Files with cosine similarity above this threshold are flagged.
+
+Adjust in `EmbeddingEngine` constructor options.
+
+## 🛡️ Error Handling
+
+- If Ollama is unavailable, L1 AI suggestions gracefully fall back to a default message
+- L2 checks Ollama availability before starting and skips if unreachable
+- Individual file failures don't stop the batch process
+- All errors are logged with context
 
 ## 📄 License
 
-MIT - feel free to fork and use in your own projects.
+MIT
 
 ---
 
-Built with ❤️ for indie developers who care about privacy.
+Built with ❤️ for developers who care about code quality and privacy.
