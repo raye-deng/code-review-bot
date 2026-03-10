@@ -26,7 +26,7 @@ export interface EmbeddingEngineOptions {
 }
 
 const DEFAULT_OLLAMA_URL = 'http://192.168.66.141:11434';
-const DEFAULT_EMBEDDING_MODEL = 'qwen2.5:7b-instruct';
+const DEFAULT_EMBEDDING_MODEL = 'nomic-embed-text';
 const DEFAULT_SIMILARITY_THRESHOLD = 0.85;
 
 /**
@@ -104,29 +104,72 @@ export class EmbeddingEngine {
   }
 
   /**
-   * 批量生成文件 embedding
+   * 批量生成多个文本的 embedding（单次 API 调用）
+   */
+  async generateEmbeddingBatch(texts: string[]): Promise<number[][]> {
+    const response = await fetch(`${this.ollamaUrl}/api/embed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: this.model,
+        input: texts,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Ollama embedding API error (${response.status}): ${errorText}`);
+    }
+
+    const data = await response.json() as { embeddings?: number[][] };
+    if (!data.embeddings || data.embeddings.length === 0) {
+      throw new Error('Ollama returned empty embeddings');
+    }
+
+    return data.embeddings;
+  }
+
+  /**
+   * 批量生成文件 embedding（使用 batch API，每批最多 10 个）
    */
   async embedFiles(
     files: { filePath: string; content: string }[]
   ): Promise<EmbeddingResult[]> {
     const results: EmbeddingResult[] = [];
+    const BATCH_SIZE = 10;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      console.log(`  📐 Embedding [${i + 1}/${files.length}]: ${file.filePath}`);
+    for (let batchStart = 0; batchStart < files.length; batchStart += BATCH_SIZE) {
+      const batch = files.slice(batchStart, batchStart + BATCH_SIZE);
+      const batchEnd = Math.min(batchStart + BATCH_SIZE, files.length);
+      console.log(`  📐 Embedding batch [${batchStart + 1}-${batchEnd}/${files.length}]`);
 
       try {
-        // 截断过长的文件内容（embedding 模型有 token 限制）
-        const truncatedContent = file.content.slice(0, 8000);
-        const embedding = await this.generateEmbedding(truncatedContent);
+        const truncatedTexts = batch.map(f => f.content.slice(0, 8000));
+        const embeddings = await this.generateEmbeddingBatch(truncatedTexts);
 
-        results.push({
-          filePath: file.filePath,
-          embedding,
-          contentHash: simpleHash(file.content),
-        });
+        for (let i = 0; i < batch.length; i++) {
+          results.push({
+            filePath: batch[i].filePath,
+            embedding: embeddings[i],
+            contentHash: simpleHash(batch[i].content),
+          });
+        }
       } catch (error) {
-        console.error(`  ⚠️  Embedding failed for ${file.filePath}: ${(error as Error).message}`);
+        // Fallback: 逐条处理
+        console.warn(`  ⚠️  Batch embedding failed, falling back to sequential: ${(error as Error).message}`);
+        for (const file of batch) {
+          try {
+            const truncatedContent = file.content.slice(0, 8000);
+            const embedding = await this.generateEmbedding(truncatedContent);
+            results.push({
+              filePath: file.filePath,
+              embedding,
+              contentHash: simpleHash(file.content),
+            });
+          } catch (err) {
+            console.error(`  ⚠️  Embedding failed for ${file.filePath}: ${(err as Error).message}`);
+          }
+        }
       }
     }
 

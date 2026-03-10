@@ -1,0 +1,570 @@
+{
+  "level": "L2",
+  "timestamp": "2026-03-10T20:15:39.971Z",
+  "eslint": [
+    {
+      "type": "error",
+      "location": {
+        "line": 43,
+        "column": 28
+      },
+      "ruleId": "no-undef",
+      "message": "'fetch' is not defined.",
+      "filePath": "src/lib/ai-suggestions.ts",
+      "suggestion": "**Specific Fix:** Add `/* global fetch */` comment at the top of your file or configure ESLint to recognize fetch as a global variable.\n\n**Why This Is a Problem:** The `fetch` API is a browser-native function that isn't automatically available in all environments. ESLint's no-undef rule requires explicit declaration of global variables to prevent undefined reference errors. Without this declaration, ESLint incorrectly flags fetch as undefined.\n\n**Example Corrected Code:**\n```javascript\n/* global fetch */\n// or add to your .eslintrc file:\n// {\n//   \"globals\": {\n//     \"fetch\": \"readonly\"\n//   }\n// }\n\nconst response = await fetch('/api/data');\n```\n\nThe global declaration tells ESLint that fetch is intentionally defined elsewhere (browser environment) and should be ignored by the no-undef rule."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 75,
+        "column": 5
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/ai-suggestions.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The `no-undef` rule flags 'console' as undefined because ESLint doesn't recognize it as a built-in browser/global object. While `console` is available in browsers and Node.js, ESLint's default configuration requires explicit declaration of global variables to prevent accidental use of undefined variables.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n/* eslint no-undef: \"off\" */\n\nfunction myFunction() {\n    console.log('Hello'); // Now this won't trigger the error\n}\n```\n\nAlternative solution: Configure your ESLint settings to include `console` in the globals section of your `.eslintrc` file:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 75,
+        "column": 5
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/ai-suggestions.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The `no-undef` rule flags 'console' as undefined because ESLint doesn't recognize it as a built-in browser/global object. While `console` is available in browsers and Node.js, ESLint's default configuration requires explicit declaration of global variables to prevent accidental use of undefined variables.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n/* eslint no-undef: \"off\" */\n\nfunction myFunction() {\n    console.log('Hello'); // Now this won't trigger the error\n}\n```\n\nAlternative solution: Configure your ESLint settings to include `console` in the globals section of your `.eslintrc` file:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 84,
+        "column": 15
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/ai-suggestions.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type or `unknown` and add proper type casting when needed.\n\n**Why This is a Problem:** Using `any` defeats TypeScript's type checking benefits, allowing runtime errors to slip through compile-time safety nets. It disables type inference and makes code harder to maintain.\n\n**Example Corrected Code:**\n```typescript\n// Before:\nfunction processData(data: any) {\n  return data.value;\n}\n\n// After:\nfunction processData(data: { value: string }) {\n  return data.value;\n}\n\n// Or with unknown for better safety:\nfunction processData(data: unknown) {\n  if (typeof data === 'object' && data !== null) {\n    return (data as { value: string }).value;\n  }\n  return undefined;\n}\n```\n\nThe fix requires identifying the actual expected type and using it instead of `any` to maintain type safety while preserving functionality."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 96,
+        "column": 27
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/ai-suggestions.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why this is a problem:** The `any` type defeats TypeScript's type checking benefits, allowing runtime errors to slip through compilation. It disables type safety and makes code harder to maintain and refactor.\n\n**Example corrected code:**\n```typescript\n// Before\nfunction processData(data: any) {\n  return data.value;\n}\n\n// After  \nfunction processData(data: string) {\n  return data.toUpperCase();\n}\n\n// Or if unknown type:\nfunction processData(data: unknown) {\n  if (typeof data === 'string') {\n    return data.toUpperCase();\n  }\n  return null;\n}\n```\n\nThe fix requires identifying the actual expected type and using it instead of `any` to maintain type safety while preserving functionality."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 105,
+        "column": 30
+      },
+      "ruleId": "no-undef",
+      "message": "'fetch' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global fetch */` comment at the top of your file or configure ESLint to recognize fetch as a global variable.\n\n**Why This is a Problem:** The `fetch` API is a browser-native function that isn't automatically available in all environments. ESLint's no-undef rule flags undefined variables, causing build failures when fetch is used without proper declaration.\n\n**Example Corrected Code:**\n```javascript\n/* global fetch */\n// or add to .eslintrc.json: \"globals\": { \"fetch\": \"readonly\" }\n\nconst response = await fetch('/api/data');\nconst data = await response.json();\n```\n\nAlternative solutions include using a polyfill or configuring your ESLint settings to recognize browser globals. The global comment approach is quickest for single files, while eslint configuration works for entire projects."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 142,
+        "column": 7
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it without proper configuration, causing false positives during linting.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\nAlternative solutions:\n1. Add `\"browser\": true` to your ESLint config's `env` section\n2. Use `eslint-disable-next-line no-undef` before the problematic line\n3. Configure `globals` in your ESLint settings to include `console: true`\n\nThe global declaration approach is recommended as it explicitly documents the expected globals in your codebase."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 142,
+        "column": 7
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it without proper configuration, causing false positives during linting.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\nAlternative solutions:\n1. Add `\"browser\": true` to your ESLint config's `env` section\n2. Use `eslint-disable-next-line no-undef` before the problematic line\n3. Configure `globals` in your ESLint settings to include `console: true`\n\nThe global declaration approach is recommended as it explicitly documents the expected globals in your codebase."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 163,
+        "column": 7
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('debug message');\n```\n\nAlternative solutions:\n1. Configure ESLint with `globals: { console: true }` in your .eslintrc file\n2. Use `eslint-disable-line no-undef` on the specific line\n3. Add `browser: true` to your ESLint environment settings\n\nThe global declaration approach is recommended for consistent codebase-wide recognition of console usage."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 163,
+        "column": 7
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('debug message');\n```\n\nAlternative solutions:\n1. Configure ESLint with `globals: { console: true }` in your .eslintrc file\n2. Use `eslint-disable-line no-undef` on the specific line\n3. Add `browser: true` to your ESLint environment settings\n\nThe global declaration approach is recommended for consistent codebase-wide recognition of console usage."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 173,
+        "column": 7
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Remove or comment out the console.log() statement on line 173.\n\n**Why This Is a Problem:** The `no-console` rule prevents developers from accidentally leaving debugging statements in production code. Console logs can:\n- Bloat application size\n- Expose sensitive data\n- Slow down performance\n- Create security vulnerabilities\n- Pollute user-facing output\n\n**Example Corrected Code:**\n```javascript\n// Before:\nconsole.log('Debug info');\nsomeFunction();\n\n// After:\n// console.log('Debug info'); // Removed\nsomeFunction();\n```\n\nAlternative approaches:\n1. Use conditional logging: `if (process.env.NODE_ENV === 'development') console.log()`\n2. Replace with proper logging framework\n3. Use debugger statement for breakpoints instead\n\nThe fix ensures clean, production-ready code without accidental debug output."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 173,
+        "column": 7
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Remove or comment out the console.log() statement on line 173.\n\n**Why This Is a Problem:** The `no-console` rule prevents developers from accidentally leaving debugging statements in production code. Console logs can:\n- Bloat application size\n- Expose sensitive data\n- Slow down performance\n- Create security vulnerabilities\n- Pollute user-facing output\n\n**Example Corrected Code:**\n```javascript\n// Before:\nconsole.log('Debug info');\nsomeFunction();\n\n// After:\n// console.log('Debug info'); // Removed\nsomeFunction();\n```\n\nAlternative approaches:\n1. Use conditional logging: `if (process.env.NODE_ENV === 'development') console.log()`\n2. Replace with proper logging framework\n3. Use debugger statement for breakpoints instead\n\nThe fix ensures clean, production-ready code without accidental debug output."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 207,
+        "column": 75
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why this is a problem:** The `any` type defeats TypeScript's type checking benefits, allowing runtime errors to slip through compilation. It disables type safety and makes code harder to maintain and refactor.\n\n**Example corrected code:**\n```typescript\n// Before (problematic)\nconst processData = (data: any) => {\n  return data.value;\n};\n\n// After (fixed)\nconst processData = (data: string | number) => {\n  return data.toString();\n};\n\n// Or with unknown for better safety\nconst processData = (data: unknown) => {\n  if (typeof data === 'string') {\n    return data.toUpperCase();\n  }\n  return String(data);\n};\n```"
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 248,
+        "column": 30
+      },
+      "ruleId": "no-undef",
+      "message": "'fetch' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `/* global fetch */` at the top of your file or configure ESLint to recognize fetch as a global variable.\n\n**Why This is a Problem:** The `fetch` API is a browser-native function that isn't automatically available in all environments. ESLint's no-undef rule requires explicit declaration of global variables to prevent undefined reference errors. Without this declaration, ESLint incorrectly flags fetch as undefined even though it exists in browsers and Node.js (with polyfills).\n\n**Example Corrected Code:**\n```javascript\n/* global fetch */\n// or add to .eslintrc.json:\n{\n  \"globals\": {\n    \"fetch\": \"readonly\"\n  }\n}\n\n// Then your code can use fetch normally:\nconst response = await fetch('/api/data');\n```\n\nThe global declaration tells ESLint that fetch is intentionally defined elsewhere, resolving the false positive error."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 249,
+        "column": 17
+      },
+      "ruleId": "no-undef",
+      "message": "'AbortSignal' is not defined.",
+      "filePath": "src/lib/deep-review.ts",
+      "suggestion": "**Specific Fix:** Add `AbortSignal` to your ESLint configuration or declare it globally.\n\n**Why This is a Problem:** `AbortSignal` is a built-in browser API for controlling fetch requests and other operations, but ESLint's `no-undef` rule doesn't recognize it as a global variable. This occurs when using modern web APIs without proper environment configuration.\n\n**Example Corrected Code:**\n```javascript\n// Option 1: Configure ESLint (.eslintrc.json)\n{\n  \"env\": {\n    \"browser\": true\n  }\n}\n\n// Option 2: Declare globally in your file\n/* global AbortSignal */\n\nconst controller = new AbortController();\nconst signal = controller.signal;\n```\n\nThe browser environment automatically defines `AbortSignal`, but ESLint needs to be configured to recognize it as a valid global variable."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 84,
+        "column": 28
+      },
+      "ruleId": "no-undef",
+      "message": "'fetch' is not defined.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global fetch */` comment at the top of your file or configure ESLint to recognize fetch as a global variable.\n\n**Why This Is a Problem:** The `fetch` API is a browser-native function that isn't automatically available in all environments. ESLint's no-undef rule flags it as undefined because it expects all variables to be declared. Without proper configuration, ESLint treats fetch as an undeclared variable, causing linting errors.\n\n**Example Corrected Code:**\n```javascript\n/* global fetch */\n// or configure eslint with \"env\": { \"browser\": true }\n\nconst response = await fetch('/api/data');\nconst data = await response.json();\n```\n\nThe global comment tells ESLint to ignore fetch in the current file, while browser environment configuration makes fetch available globally across all files."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 116,
+        "column": 7
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\n**Alternative Solution:** Configure your ESLint settings to include `console` in the globals section:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 116,
+        "column": 7
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\n**Alternative Solution:** Configure your ESLint settings to include `console` in the globals section:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 129,
+        "column": 9
+      },
+      "ruleId": "no-console",
+      "message": "Unexpected console statement.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\n**Alternative Solution:** Configure your ESLint settings to include `console` in the globals:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 129,
+        "column": 9
+      },
+      "ruleId": "no-undef",
+      "message": "'console' is not defined.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global console */` at the top of your file or configure ESLint to recognize console as a global variable.\n\n**Why This is a Problem:** The ESLint rule `no-undef` prevents using undefined variables. Console is a browser global object, but ESLint doesn't automatically recognize it unless explicitly declared or configured. This can cause build failures or runtime errors in strict environments.\n\n**Example Corrected Code:**\n```javascript\n/* global console */\n// or\n// eslint-disable-next-line no-undef\nconsole.log('Hello World');\n```\n\n**Alternative Solution:** Configure your ESLint settings to include `console` in the globals:\n```json\n{\n  \"globals\": {\n    \"console\": \"readonly\"\n  }\n}\n```"
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 169,
+        "column": 30
+      },
+      "ruleId": "no-undef",
+      "message": "'fetch' is not defined.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `/* global fetch */` at the top of your file or configure ESLint to recognize fetch as a global variable.\n\n**Why This Is a Problem:** The `fetch` API is a browser-native function that isn't automatically available in all environments. ESLint's no-undef rule flags it as undefined because it expects all variables to be declared. Without proper configuration, ESLint treats fetch as an undeclared variable, causing linting errors.\n\n**Example Corrected Code:**\n```javascript\n/* global fetch */\n// or configure eslint.json with:\n// {\n//   \"globals\": {\n//     \"fetch\": \"readonly\"\n//   }\n// }\n\nconst response = await fetch('/api/data');\n```\n\nThe global declaration tells ESLint that fetch is intentionally defined elsewhere (browser environment) and should be ignored by the no-undef rule."
+    },
+    {
+      "type": "error",
+      "location": {
+        "line": 170,
+        "column": 17
+      },
+      "ruleId": "no-undef",
+      "message": "'AbortSignal' is not defined.",
+      "filePath": "src/lib/embedding-engine.ts",
+      "suggestion": "**Specific Fix:** Add `AbortSignal` to your ESLint configuration or declare it globally.\n\n**Why This Is a Problem:** `AbortSignal` is a built-in browser API for controlling fetch requests and other operations, but ESLint's `no-undef` rule doesn't recognize it as a global variable. This occurs when using modern web APIs without proper environment configuration.\n\n**Example Corrected Code:**\n```javascript\n// Option 1: Update .eslintrc.js\nmodule.exports = {\n  env: {\n    browser: true,\n    es2021: true\n  }\n};\n\n// Option 2: Use AbortSignal in code (already correct)\nconst controller = new AbortController();\nconst signal = controller.signal;\nfetch(url, { signal });\n```\n\nThe environment configuration tells ESLint that browser globals like `AbortSignal` are available, resolving the undefined error while maintaining proper code functionality."
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 15,
+        "column": 12
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/lint-engine.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why This is a Problem:** The `any` type defeats TypeScript's type checking benefits, allowing any value to be assigned to the variable without type safety. This can lead to runtime errors and makes code harder to maintain and refactor.\n\n**Example Corrected Code:**\n```typescript\n// Before\nfunction processData(data: any) {\n  return data.length;\n}\n\n// After  \nfunction processData(data: string) {\n  return data.length;\n}\n\n// Or if unknown type:\nfunction processData(data: unknown) {\n  if (typeof data === 'string') {\n    return data.length;\n  }\n  return 0;\n}\n```"
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 16,
+        "column": 19
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/lint-engine.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why it's a problem:** The `any` type defeats TypeScript's type checking benefits, allowing runtime errors to slip through compilation and making code harder to maintain and debug.\n\n**Example corrected code:**\n```typescript\n// Before\nfunction processData(data: any) {\n  return data.value;\n}\n\n// After  \nfunction processData(data: { value: string }) {\n  return data.value;\n}\n\n// Or with unknown for better safety:\nfunction processData(data: unknown) {\n  if (typeof data === 'object' && data !== null) {\n    return (data as { value: string }).value;\n  }\n  return '';\n}\n```"
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 26,
+        "column": 10
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/lint-engine.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why it's a problem:** The `any` type defeats TypeScript's type checking benefits, allowing any value to be assigned and bypassing compile-time error detection. This leads to runtime errors and reduces code reliability.\n\n**Example corrected code:**\n```typescript\n// Before (problematic)\nfunction processData(data: any) {\n  return data.length;\n}\n\n// After (fixed)\nfunction processData(data: string) {\n  return data.length;\n}\n\n// Or if unknown type:\nfunction processData(data: unknown) {\n  if (typeof data === 'string') {\n    return data.length;\n  }\n  return 0;\n}\n```"
+    },
+    {
+      "type": "warning",
+      "location": {
+        "line": 44,
+        "column": 27
+      },
+      "ruleId": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type.",
+      "filePath": "src/lib/lint-engine.ts",
+      "suggestion": "**Specific Fix:** Replace `any` with a specific type like `string`, `number`, or `unknown` depending on the expected data.\n\n**Why this is a problem:** The `any` type defeats TypeScript's type checking benefits, allowing arbitrary values that can cause runtime errors. It disables type safety and makes code harder to maintain.\n\n**Example corrected code:**\n```typescript\n// Before\nfunction processData(data: any) {\n  return data.value;\n}\n\n// After  \nfunction processData(data: string) {\n  return data.toUpperCase();\n}\n\n// Or if unknown type:\nfunction processData(data: unknown) {\n  if (typeof data === 'string') {\n    return data.toUpperCase();\n  }\n  return null;\n}\n```\n\nReplace `any` with the actual expected type to maintain type safety and code reliability."
+    }
+  ],
+  "similarity": [
+    {
+      "fileA": "src/lib/deep-review.ts",
+      "fileB": "src/lib/embedding-engine.ts",
+      "similarity": 0.9683843134768726
+    },
+    {
+      "fileA": "src/lib/embedding-engine.ts",
+      "fileB": "src/lib/lint-engine.ts",
+      "similarity": 0.9629056778250756
+    },
+    {
+      "fileA": "src/lib/ai-suggestions.ts",
+      "fileB": "src/lib/deep-review.ts",
+      "similarity": 0.9595820359250398
+    },
+    {
+      "fileA": "src/lib/ai-suggestions.ts",
+      "fileB": "src/lib/embedding-engine.ts",
+      "similarity": 0.9561760679987904
+    },
+    {
+      "fileA": "src/lib/deep-review.ts",
+      "fileB": "src/lib/lint-engine.ts",
+      "similarity": 0.9391456191262685
+    },
+    {
+      "fileA": "src/lib/ai-suggestions.ts",
+      "fileB": "src/lib/lint-engine.ts",
+      "similarity": 0.9357870393774852
+    }
+  ],
+  "deepReview": [
+    {
+      "filePath": "src/lib/ai-suggestions.ts",
+      "issues": [
+        {
+          "severity": "warning",
+          "category": "architecture",
+          "title": "Hardcoded Ollama URL",
+          "description": "The default Ollama URL is hardcoded, which makes the application inflexible and difficult to deploy in different environments. This violates the principle of configuration over code.",
+          "location": "line 12",
+          "suggestion": "Move the default Ollama URL to an environment variable or configuration file that can be overridden at runtime."
+        },
+        {
+          "severity": "warning",
+          "category": "security",
+          "title": "Potential Command Injection Vulnerability",
+          "description": "The code constructs a prompt by directly interpolating user-provided data (violation.message, violation.source) into the prompt string. If these values contain malicious content, they could potentially be used to manipulate the AI model's behavior or inject unwanted instructions.",
+          "location": "line 23",
+          "suggestion": "Sanitize and validate all user-provided input before including it in the prompt. Consider using a more robust templating system that properly escapes special characters."
+        },
+        {
+          "severity": "warning",
+          "category": "performance",
+          "title": "Inefficient Batch Processing",
+          "description": "The batch processing logic processes batches sequentially rather than in parallel, which can significantly slow down the generation of suggestions when dealing with many violations. Each batch waits for all previous batches to complete before starting.",
+          "location": "line 64",
+          "suggestion": "Process all batches in parallel using Promise.all() on the array of batch promises instead of sequential processing."
+        },
+        {
+          "severity": "warning",
+          "category": "best-practice",
+          "title": "Generic Error Handling",
+          "description": "The error handling catches all errors and returns a generic message. This makes debugging difficult as specific error information is lost. The code should preserve more context about what went wrong.",
+          "location": "line 54",
+          "suggestion": "Log the full error object including stack trace and consider re-throwing or returning more specific error information for better debugging."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Missing Input Validation",
+          "description": "The function parameters are not validated. For example, ollamaUrl could be undefined or malformed, which might cause runtime errors.",
+          "location": "line 17",
+          "suggestion": "Add validation for input parameters to ensure they meet expected formats and values."
+        },
+        {
+          "severity": "info",
+          "category": "type-safety",
+          "title": "Use of 'any' Type",
+          "description": "The batchGenerateSuggestions function uses 'any' type for violations parameter, which reduces type safety and makes the code harder to maintain.",
+          "location": "line 60",
+          "suggestion": "Define a proper interface for violation objects and use it instead of 'any'."
+        },
+        {
+          "severity": "info",
+          "category": "type-safety",
+          "title": "Inconsistent Type Annotations",
+          "description": "While some variables have explicit type annotations, others like the response data are typed using a loose assertion. This can lead to runtime errors if the API changes.",
+          "location": "line 47",
+          "suggestion": "Use more precise type definitions for API responses and validate structure before accessing properties."
+        }
+      ],
+      "summary": "The code implements AI suggestion generation but has several architectural, security, and performance concerns. Key issues include hardcoded URLs, potential injection vulnerabilities, inefficient batch processing, and weak error handling. Type safety could be improved with better typing and input validation.",
+      "reviewDurationMs": 14498
+    },
+    {
+      "filePath": "src/lib/deep-review.ts",
+      "issues": [
+        {
+          "severity": "warning",
+          "category": "architecture",
+          "title": "Hardcoded default Ollama URL",
+          "description": "The default Ollama URL is hardcoded to 'http://192.168.66.141:11434', which is a specific IP address that may not be accessible in all environments. This creates a dependency on a fixed network configuration and reduces portability of the application.",
+          "location": "line 27",
+          "suggestion": "Use environment variables or configuration files to allow customization of the Ollama URL, falling back to a sensible default only if no override is provided."
+        },
+        {
+          "severity": "warning",
+          "category": "security",
+          "title": "Potential SSRF vulnerability in fetch calls",
+          "description": "The code uses dynamic URLs constructed from user-provided or configurable inputs (ollamaUrl) for fetch requests. If an attacker can control the ollamaUrl, they could potentially redirect requests to internal services or perform server-side request forgery attacks.",
+          "location": "line 54",
+          "suggestion": "Implement strict validation and whitelisting of allowed URLs, or use a proxy mechanism to prevent arbitrary URL access."
+        },
+        {
+          "severity": "warning",
+          "category": "performance",
+          "title": "Inefficient string slicing in user prompt",
+          "description": "The code slices the content to 12000 characters (line 63) which may truncate important code sections. This could lead to incomplete analysis and potentially missed issues, especially for larger files.",
+          "location": "line 63",
+          "suggestion": "Consider implementing a more intelligent truncation strategy or using a sliding window approach that preserves context around key code elements."
+        },
+        {
+          "severity": "warning",
+          "category": "performance",
+          "title": "Inefficient parsing of LLM response",
+          "description": "The parseResponse method performs multiple string operations (replace, regex match, slice) to extract JSON from potentially malformed responses. This could be inefficient and may not handle all edge cases properly.",
+          "location": "line 93",
+          "suggestion": "Implement more robust parsing logic with better error handling and consider using a dedicated JSON parser that can handle various formats."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Missing input validation for file content",
+          "description": "The code doesn't validate or sanitize the file content before sending it to the LLM. Large files could cause performance issues or memory problems in the LLM service.",
+          "location": "line 63",
+          "suggestion": "Add size limits and validation checks for input content to prevent potential abuse or performance degradation."
+        },
+        {
+          "severity": "warning",
+          "category": "error-handling",
+          "title": "Generic error handling in parseResponse",
+          "description": "The parseResponse method catches all errors during JSON parsing but only logs a generic message. This makes debugging difficult as specific parsing failures are lost.",
+          "location": "line 104",
+          "suggestion": "Log the actual parsing error along with the raw content for better debugging and monitoring."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Console logging in production code",
+          "description": "The code uses console.log statements for progress tracking, which is acceptable for development but should be replaced with proper logging mechanisms in production environments.",
+          "location": "line 73",
+          "suggestion": "Use a proper logging library with configurable log levels instead of console.log statements."
+        },
+        {
+          "severity": "warning",
+          "category": "type-safety",
+          "title": "Use of any type in parsing",
+          "description": "The parseResponse method uses 'any' type for the issue object during mapping, which bypasses TypeScript's type checking and could lead to runtime errors.",
+          "location": "line 113",
+          "suggestion": "Define a proper interface for the parsed issue structure and use it instead of 'any'."
+        }
+      ],
+      "summary": "The code implements a deep review engine using LLM capabilities but has several issues related to security (hardcoded URLs, potential SSRF), performance (string operations, content truncation), and error handling. While the architecture is generally sound, there are opportunities for improvement in input validation, logging practices, and type safety.",
+      "reviewDurationMs": 13355
+    },
+    {
+      "filePath": "src/lib/embedding-engine.ts",
+      "issues": [
+        {
+          "severity": "warning",
+          "category": "architecture",
+          "title": "Hardcoded default Ollama URL",
+          "description": "The default Ollama URL is hardcoded, which makes the application inflexible and difficult to deploy in different environments. This violates the principle of configuration over code.",
+          "location": "line 24",
+          "suggestion": "Move the default URL to an environment variable or configuration file that can be overridden at runtime."
+        },
+        {
+          "severity": "warning",
+          "category": "performance",
+          "title": "Inefficient similarity calculation",
+          "description": "The findSimilarFiles method uses a nested loop approach with O(n^2) complexity, which becomes inefficient as the number of files increases. This could lead to performance bottlenecks when processing large codebases.",
+          "location": "line 104",
+          "suggestion": "Consider using approximate nearest neighbor (ANN) algorithms or libraries like FAISS for better performance with large datasets."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Missing input validation",
+          "description": "The generateEmbedding method does not validate the input text before sending it to Ollama, which could lead to unexpected behavior if empty or malformed inputs are provided.",
+          "location": "line 61",
+          "suggestion": "Add validation to ensure the input text is not empty and has a reasonable length before making API calls."
+        },
+        {
+          "severity": "warning",
+          "category": "error-handling",
+          "title": "Generic error handling in embedFiles",
+          "description": "The embedFiles method catches errors but only logs them with console.error. This could mask important issues and doesn't provide proper error propagation for callers.",
+          "location": "line 86",
+          "suggestion": "Consider re-throwing the error or implementing a more robust error handling strategy that allows calling code to handle failures appropriately."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Missing type safety for API response",
+          "description": "The API response parsing uses a type assertion (`as { embeddings?: number[][] }`) which bypasses TypeScript's type checking. This could lead to runtime errors if the API response format changes.",
+          "location": "line 75",
+          "suggestion": "Use proper type guards or validation libraries like Zod to ensure the API response matches expected structure."
+        },
+        {
+          "severity": "warning",
+          "category": "security",
+          "title": "Potential injection vulnerability in content truncation",
+          "description": "The simpleHash function uses a basic hashing algorithm that may not be cryptographically secure. While it's used for caching, if this hash is ever used in security-sensitive contexts, it could be vulnerable.",
+          "location": "line 42",
+          "suggestion": "If cryptographic security is needed, use a proper cryptographic hash function like SHA-256 instead of the simple hash implementation."
+        }
+      ],
+      "summary": "The code implements a basic embedding engine with reasonable structure but has several areas for improvement. Key issues include hardcoded configuration values, performance concerns with similarity calculations, and limited error handling. The type safety could be improved by avoiding unsafe type assertions. Overall, functional but requires attention to scalability and security aspects.",
+      "reviewDurationMs": 9643
+    },
+    {
+      "filePath": "src/lib/lint-engine.ts",
+      "issues": [
+        {
+          "severity": "warning",
+          "category": "type-safety",
+          "title": "Use of any type in ESLint constructor",
+          "description": "The ESLint constructor is being called with an 'as any' cast, which bypasses TypeScript's type checking. This could hide potential type errors and makes the code less maintainable.",
+          "location": "line 20",
+          "suggestion": "Remove the 'as any' cast and properly type the options object or use a more specific type annotation that matches ESLint's expected configuration structure."
+        },
+        {
+          "severity": "warning",
+          "category": "type-safety",
+          "title": "Unsafe type assertion for source property",
+          "description": "The code uses '(msg as any).source' to access the source property, which bypasses TypeScript's type checking. This is dangerous because it assumes the property exists without proper validation.",
+          "location": "line 35",
+          "suggestion": "Check if the source property exists on the message object before accessing it, or properly extend the ESLint message type to include the source property."
+        },
+        {
+          "severity": "warning",
+          "category": "best-practice",
+          "title": "Inconsistent error handling for file operations",
+          "description": "While the code checks for file existence, it doesn't handle potential errors during file reading or directory traversal operations. This could lead to unhandled exceptions in edge cases.",
+          "location": "line 15",
+          "suggestion": "Wrap file system operations in try-catch blocks and implement proper error handling with meaningful error messages."
+        },
+        {
+          "severity": "info",
+          "category": "best-practice",
+          "title": "Missing input validation for directory paths",
+          "description": "The code doesn't validate the directory path parameter before processing, which could lead to unexpected behavior if an invalid path is provided.",
+          "location": "line 26",
+          "suggestion": "Add validation to ensure dirPath is a valid string and represents an existing directory."
+        },
+        {
+          "severity": "warning",
+          "category": "performance",
+          "title": "Inefficient file system traversal",
+          "description": "The recursive directory traversal could be inefficient for deeply nested directories or large codebases, as it processes all files regardless of whether they need linting.",
+          "location": "line 41",
+          "suggestion": "Consider implementing a more efficient traversal algorithm or adding early termination conditions to avoid unnecessary processing."
+        },
+        {
+          "severity": "info",
+          "category": "architecture",
+          "title": "Tight coupling between file system and linting logic",
+          "description": "The code directly uses fs module for file operations, which creates tight coupling with the file system. This makes testing harder and reduces flexibility.",
+          "location": "line 10",
+          "suggestion": "Consider abstracting file system operations into a separate service or interface to improve testability and decoupling."
+        }
+      ],
+      "summary": "The code implements a basic lint engine with some type safety issues and potential performance concerns. The use of 'any' types and unsafe assertions should be addressed for better maintainability. Error handling is basic and could be improved, and the file system operations could be made more robust and efficient.",
+      "reviewDurationMs": 8826
+    }
+  ]
+}
